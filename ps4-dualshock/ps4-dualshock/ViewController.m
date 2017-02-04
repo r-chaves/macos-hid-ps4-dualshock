@@ -15,18 +15,26 @@
 
 static void handle_device_match
 (
-    void *          inContext,       // context from IOHIDManagerRegisterDeviceMatchingCallback
-    IOReturn        inResult,        // the result of the matching operation
-    void *          inSender,        // the IOHIDManagerRef for the new device
-    IOHIDDeviceRef  inIOHIDDeviceRef // the new HID device
+    void *          inContext,          // context from IOHIDManagerRegisterDeviceMatchingCallback
+    IOReturn        inResult,           // the result of the matching operation
+    void *          inSender,           // the IOHIDManagerRef for the new device
+    IOHIDDeviceRef  inIOHIDDeviceRef    // the new HID device
 );
 
 static void handle_device_removal
 (
-    void *          inContext,       // context from IOHIDManagerRegisterDeviceMatchingCallback
-    IOReturn        inResult,        // the result of the removing operation
-    void *          inSender,        // the IOHIDManagerRef for the device being removed
-    IOHIDDeviceRef  inIOHIDDeviceRef // the removed HID device
+    void *          inContext,          // context from IOHIDManagerRegisterDeviceMatchingCallback
+    IOReturn        inResult,           // the result of the removing operation
+    void *          inSender,           // the IOHIDManagerRef for the device being removed
+    IOHIDDeviceRef  inIOHIDDeviceRef    // the removed HID device
+);
+
+static void handle_device_input
+(
+    void *          inContext,          // context from IOHIDManagerRegisterDeviceMatchingCallback
+    IOReturn        inResult,           // the result of the removing operation
+    void *          inSender,           // the IOHIDManagerRef for the device being removed
+    IOHIDValueRef   inValue             // IOHIDValueRef containing the returned element value.
 );
 
 @implementation ViewController
@@ -77,30 +85,45 @@ static void handle_device_removal
 
 static void handle_device_match
 (
-    void *          inContext,       // context from IOHIDManagerRegisterDeviceMatchingCallback
-    IOReturn        inResult,        // the result of the matching operation
-    void *          inSender,        // the IOHIDManagerRef for the new device
-    IOHIDDeviceRef  inIOHIDDeviceRef // the new HID device
+    void *          inContext,          // context from IOHIDManagerRegisterDeviceMatchingCallback
+    IOReturn        inResult,           // the result of the matching operation
+    void *          inSender,           // the IOHIDManagerRef for the new device
+    IOHIDDeviceRef  inIOHIDDeviceRef    // the new HID device
 )
 {
     printf("%s(context: %p, result: %i, sender: %p, device: %p).\n",
         __PRETTY_FUNCTION__, inContext, inResult, inSender, inIOHIDDeviceRef);
     ViewController *self = (__bridge ViewController *)inContext;
     [self.ds4_list addObject:(__bridge id _Nonnull)(inIOHIDDeviceRef)];
+    IOHIDDeviceRegisterInputValueCallback(
+        inIOHIDDeviceRef, handle_device_input, inContext);
 }
 
 static void handle_device_removal
 (
-    void *          inContext,       // context from IOHIDManagerRegisterDeviceMatchingCallback
-    IOReturn        inResult,        // the result of the removing operation
-    void *          inSender,        // the IOHIDManagerRef for the device being removed
-    IOHIDDeviceRef  inIOHIDDeviceRef // the removed HID device
+    void *          inContext,          // context from IOHIDManagerRegisterDeviceMatchingCallback
+    IOReturn        inResult,           // the result of the removing operation
+    void *          inSender,           // the IOHIDManagerRef for the device being removed
+    IOHIDDeviceRef  inIOHIDDeviceRef    // the removed HID device
 )
 {
     printf("%s(context: %p, result: %i, sender: %p, device: %p).\n",
         __PRETTY_FUNCTION__, inContext, inResult, inSender, inIOHIDDeviceRef);
     ViewController *self = (__bridge ViewController *)inContext;
     [self.ds4_list removeObject:(__bridge id _Nonnull)(inIOHIDDeviceRef)];
+    IOHIDDeviceRegisterInputValueCallback(inIOHIDDeviceRef, NULL, inContext);
+}
+
+static void handle_device_input
+(
+    void *          inContext,          // context from IOHIDManagerRegisterDeviceMatchingCallback
+    IOReturn        inResult,           // the result of the removing operation
+    void *          inSender,           // the IOHIDManagerRef for the device being removed
+    IOHIDValueRef   inValue             // IOHIDValueRef containing the returned element value.
+)
+{
+    printf("%s(context: %p, result: %i, sender: %p, value: %p).\n",
+        __PRETTY_FUNCTION__, inContext, inResult, inSender, inValue);   
 }
 
 @end
