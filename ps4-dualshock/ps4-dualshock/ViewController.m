@@ -32,7 +32,6 @@ static void handle_device_removal
 
 @implementation ViewController
 {
-    CFAllocatorRef alloc_ref;
     IOHIDManagerRef hid_manager;
 }
 
@@ -41,13 +40,27 @@ static void handle_device_removal
     [super viewDidLoad];
 
     // Do any additional setup after loading the view.
-    hid_manager = IOHIDManagerCreate(alloc_ref, kIOHIDOptionsTypeNone);
+
+    
+    hid_manager = IOHIDManagerCreate(
+        kCFAllocatorDefault, kIOHIDOptionsTypeNone);
+
+    NSArray *matchingTypes =
+        @[  @{
+                @ kIOHIDDeviceUsagePageKey : @(kHIDPage_GenericDesktop),
+                @ kIOHIDDeviceUsageKey     : @(kHIDUsage_GD_Joystick)
+            },
+            @{
+                @ kIOHIDDeviceUsagePageKey : @(kHIDPage_GenericDesktop),
+                @ kIOHIDDeviceUsageKey     : @(kHIDUsage_GD_GamePad)
+            }
+        ];
     
     IOHIDManagerRegisterDeviceMatchingCallback(
-        hid_manager, handle_device_match, nil);
+        hid_manager, handle_device_match, (__bridge void * _Nullable)(self));
     IOHIDManagerRegisterDeviceRemovalCallback(
-        hid_manager, handle_device_removal, nil);
-    IOHIDManagerSetDeviceMatching(hid_manager, nil);
+        hid_manager, handle_device_removal, (__bridge void * _Nullable)(self));
+    IOHIDManagerSetDeviceMatchingMultiple(hid_manager, (__bridge CFArrayRef)matchingTypes);
     IOHIDManagerScheduleWithRunLoop(
         hid_manager, CFRunLoopGetCurrent(), kCFRunLoopDefaultMode);
     IOHIDManagerOpen(hid_manager, kIOHIDOptionsTypeNone);
