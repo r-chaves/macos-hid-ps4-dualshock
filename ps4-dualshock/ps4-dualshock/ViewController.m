@@ -77,10 +77,10 @@ static void handle_device_removal
 
 static void handle_device_match
 (
- void *          inContext,       // context from IOHIDManagerRegisterDeviceMatchingCallback
- IOReturn        inResult,        // the result of the matching operation
- void *          inSender,        // the IOHIDManagerRef for the new device
- IOHIDDeviceRef  inIOHIDDeviceRef // the new HID device
+    void *          inContext,       // context from IOHIDManagerRegisterDeviceMatchingCallback
+    IOReturn        inResult,        // the result of the matching operation
+    void *          inSender,        // the IOHIDManagerRef for the new device
+    IOHIDDeviceRef  inIOHIDDeviceRef // the new HID device
 )
 {
     printf("%s(context: %p, result: %i, sender: %p, device: %p).\n",
@@ -91,10 +91,10 @@ static void handle_device_match
 
 static void handle_device_removal
 (
- void *          inContext,       // context from IOHIDManagerRegisterDeviceMatchingCallback
- IOReturn        inResult,        // the result of the removing operation
- void *          inSender,        // the IOHIDManagerRef for the device being removed
- IOHIDDeviceRef  inIOHIDDeviceRef // the removed HID device
+    void *          inContext,       // context from IOHIDManagerRegisterDeviceMatchingCallback
+    IOReturn        inResult,        // the result of the removing operation
+    void *          inSender,        // the IOHIDManagerRef for the device being removed
+    IOHIDDeviceRef  inIOHIDDeviceRef // the removed HID device
 )
 {
     printf("%s(context: %p, result: %i, sender: %p, device: %p).\n",
