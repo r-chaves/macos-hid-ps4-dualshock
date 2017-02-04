@@ -14,6 +14,7 @@
 		9459B7F51E463C760079D807 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9459B7F31E463C760079D807 /* Main.storyboard */; };
 		9459B8001E463C760079D807 /* ps4_dualshockTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 9459B7FF1E463C760079D807 /* ps4_dualshockTests.m */; };
 		9459B80B1E463C760079D807 /* ps4_dualshockUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 9459B80A1E463C760079D807 /* ps4_dualshockUITests.m */; };
+		9459B81A1E463E3B0079D807 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9459B8191E463E3B0079D807 /* IOKit.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,6 +50,7 @@
 		9459B8061E463C760079D807 /* ps4-dualshockUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "ps4-dualshockUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		9459B80A1E463C760079D807 /* ps4_dualshockUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ps4_dualshockUITests.m; sourceTree = "<group>"; };
 		9459B80C1E463C760079D807 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		9459B8191E463E3B0079D807 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,6 +58,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9459B81A1E463E3B0079D807 /* IOKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -83,6 +86,7 @@
 				9459B7FE1E463C760079D807 /* ps4-dualshockTests */,
 				9459B8091E463C760079D807 /* ps4-dualshockUITests */,
 				9459B7E61E463C760079D807 /* Products */,
+				9459B8181E463E3B0079D807 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -135,6 +139,14 @@
 				9459B80C1E463C760079D807 /* Info.plist */,
 			);
 			path = "ps4-dualshockUITests";
+			sourceTree = "<group>";
+		};
+		9459B8181E463E3B0079D807 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				9459B8191E463E3B0079D807 /* IOKit.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
