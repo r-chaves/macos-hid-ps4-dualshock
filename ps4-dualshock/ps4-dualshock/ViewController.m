@@ -74,10 +74,6 @@ static void handle_device_report
         @{
             @ kIOHIDDeviceUsagePageKey : @(kHIDPage_GenericDesktop),
             @ kIOHIDDeviceUsageKey     : @(kHIDUsage_GD_GamePad)
-        },
-        @{
-            @ kIOHIDDeviceUsagePageKey : @(kHIDPage_GenericDesktop),
-            @ kIOHIDDeviceUsageKey     : @(kHIDUsage_GD_MultiAxisController)
         }
     ];
     
@@ -114,8 +110,7 @@ static void handle_device_match
         __PRETTY_FUNCTION__, inContext, inResult, inSender, inIOHIDDeviceRef);
     ViewController *self = (__bridge ViewController *)inContext;
     [self.ds4_list setObject:[[NSMutableDictionary alloc] initWithCapacity:0]
-                      forKey:IOHIDDeviceGetProperty(inIOHIDDeviceRef,
-                                                    CFSTR(kIOHIDSerialNumberKey))];
+                      forKey:[NSValue valueWithPointer:inIOHIDDeviceRef]];
     IOHIDDeviceRegisterInputValueCallback(
         inIOHIDDeviceRef, handle_device_input, inContext);
 //    IOHIDDeviceRegisterInputReportCallback(inIOHIDDeviceRef, report, 64, handle_device_report, inContext);
@@ -132,7 +127,7 @@ static void handle_device_removal
     printf("%s(context: %p, result: %i, sender: %p, device: %p).\n",
         __PRETTY_FUNCTION__, inContext, inResult, inSender, inIOHIDDeviceRef);
     ViewController *self = (__bridge ViewController *)inContext;
-    [self.ds4_list removeObjectForKey:IOHIDDeviceGetProperty(inIOHIDDeviceRef, CFSTR(kIOHIDSerialNumberKey))];
+    [self.ds4_list removeObjectForKey:[NSValue valueWithPointer:inIOHIDDeviceRef]];
     IOHIDDeviceRegisterInputValueCallback(inIOHIDDeviceRef, NULL, inContext);
 }
 
@@ -203,10 +198,7 @@ static void handle_device_input
     h.logical_max = logical_max;
     h.physical_min = physical_min;
     h.physical_max = physical_max;
-    
-//    NSMutableDictionary *v2 = [self.ds4_list objectForKey:IOHIDDeviceGetProperty(inSender, CFSTR(kIOHIDSerialNumberKey))];
-    [[self.ds4_list objectForKey:IOHIDDeviceGetProperty(inSender, CFSTR(kIOHIDSerialNumberKey))] setObject:h forKey:[NSNumber numberWithInt:cookie]];
-//    [v2 setObject:h forKey:[NSNumber numberWithInt:cookie]];
+    [[self.ds4_list objectForKey:[NSValue valueWithPointer:inSender]] setObject:h forKey:[NSNumber numberWithInt:cookie]];
 }
 
 static void handle_device_report
