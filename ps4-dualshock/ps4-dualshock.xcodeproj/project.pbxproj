@@ -15,6 +15,7 @@
 		9459B8001E463C760079D807 /* ps4_dualshockTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 9459B7FF1E463C760079D807 /* ps4_dualshockTests.m */; };
 		9459B80B1E463C760079D807 /* ps4_dualshockUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 9459B80A1E463C760079D807 /* ps4_dualshockUITests.m */; };
 		9459B81A1E463E3B0079D807 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9459B8191E463E3B0079D807 /* IOKit.framework */; };
+		9459B81D1E5123C50079D807 /* HidElementData.m in Sources */ = {isa = PBXBuildFile; fileRef = 9459B81C1E5123C50079D807 /* HidElementData.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -51,6 +52,8 @@
 		9459B80A1E463C760079D807 /* ps4_dualshockUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ps4_dualshockUITests.m; sourceTree = "<group>"; };
 		9459B80C1E463C760079D807 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9459B8191E463E3B0079D807 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
+		9459B81B1E5123C50079D807 /* HidElementData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HidElementData.h; sourceTree = "<group>"; };
+		9459B81C1E5123C50079D807 /* HidElementData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HidElementData.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -111,6 +114,8 @@
 				9459B7F31E463C760079D807 /* Main.storyboard */,
 				9459B7F61E463C760079D807 /* Info.plist */,
 				9459B7EB1E463C760079D807 /* Supporting Files */,
+				9459B81B1E5123C50079D807 /* HidElementData.h */,
+				9459B81C1E5123C50079D807 /* HidElementData.m */,
 			);
 			path = "ps4-dualshock";
 			sourceTree = "<group>";
@@ -281,6 +286,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9459B81D1E5123C50079D807 /* HidElementData.m in Sources */,
 				9459B7F01E463C760079D807 /* ViewController.m in Sources */,
 				9459B7ED1E463C760079D807 /* main.m in Sources */,
 				9459B7EA1E463C760079D807 /* AppDelegate.m in Sources */,
@@ -510,6 +516,7 @@
 				9459B8111E463C760079D807 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		9459B8121E463C760079D807 /* Build configuration list for PBXNativeTarget "ps4-dualshockTests" */ = {
 			isa = XCConfigurationList;
@@ -518,6 +525,7 @@
 				9459B8141E463C760079D807 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		9459B8151E463C760079D807 /* Build configuration list for PBXNativeTarget "ps4-dualshockUITests" */ = {
 			isa = XCConfigurationList;
@@ -526,6 +534,7 @@
 				9459B8171E463C760079D807 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

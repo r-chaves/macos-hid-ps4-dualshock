@@ -8,11 +8,10 @@
 
 #import "ViewController.h"
 #import <IOKit/hid/IOHIDManager.h>
+#import "HidElementData.h"
 
 @interface ViewController()
-@property NSMutableArray *ds4_list;
-@property int num_inputs;
-@property int num_reports;
+@property NSMutableDictionary *ds4_list;
 @end
 
 static void handle_device_match
@@ -61,9 +60,7 @@ static void handle_device_report
     
     // Do any additional setup after loading the view.
     
-    self.ds4_list = [[NSMutableArray alloc] initWithCapacity:0];
-    self.num_inputs = 0;
-    self.num_reports = 0;
+    self.ds4_list = [[NSMutableDictionary alloc] initWithCapacity:0];
     
     hid_manager =
         IOHIDManagerCreate(kCFAllocatorDefault, kIOHIDOptionsTypeNone);
@@ -77,6 +74,10 @@ static void handle_device_report
         @{
             @ kIOHIDDeviceUsagePageKey : @(kHIDPage_GenericDesktop),
             @ kIOHIDDeviceUsageKey     : @(kHIDUsage_GD_GamePad)
+        },
+        @{
+            @ kIOHIDDeviceUsagePageKey : @(kHIDPage_GenericDesktop),
+            @ kIOHIDDeviceUsageKey     : @(kHIDUsage_GD_MultiAxisController)
         }
     ];
     
@@ -106,14 +107,18 @@ static void handle_device_match
     IOHIDDeviceRef  inIOHIDDeviceRef
 )
 {
-    static uint8_t report[64];
+    /* TODO This needs to be tracked per device. */
+//    static uint8_t report[64];
+    
     printf("%s(context: %p, result: %i, sender: %p, device: %p).\n",
         __PRETTY_FUNCTION__, inContext, inResult, inSender, inIOHIDDeviceRef);
     ViewController *self = (__bridge ViewController *)inContext;
-    [self.ds4_list addObject:(__bridge id _Nonnull)(inIOHIDDeviceRef)];
+    [self.ds4_list setObject:[[NSMutableDictionary alloc] initWithCapacity:0]
+                      forKey:IOHIDDeviceGetProperty(inIOHIDDeviceRef,
+                                                    CFSTR(kIOHIDSerialNumberKey))];
     IOHIDDeviceRegisterInputValueCallback(
         inIOHIDDeviceRef, handle_device_input, inContext);
-    IOHIDDeviceRegisterInputReportCallback(inIOHIDDeviceRef, report, 64, handle_device_report, inContext);
+//    IOHIDDeviceRegisterInputReportCallback(inIOHIDDeviceRef, report, 64, handle_device_report, inContext);
 }
 
 static void handle_device_removal
@@ -127,7 +132,7 @@ static void handle_device_removal
     printf("%s(context: %p, result: %i, sender: %p, device: %p).\n",
         __PRETTY_FUNCTION__, inContext, inResult, inSender, inIOHIDDeviceRef);
     ViewController *self = (__bridge ViewController *)inContext;
-    [self.ds4_list removeObject:(__bridge id _Nonnull)(inIOHIDDeviceRef)];
+    [self.ds4_list removeObjectForKey:IOHIDDeviceGetProperty(inIOHIDDeviceRef, CFSTR(kIOHIDSerialNumberKey))];
     IOHIDDeviceRegisterInputValueCallback(inIOHIDDeviceRef, NULL, inContext);
 }
 
@@ -139,18 +144,7 @@ static void handle_device_input
     IOHIDValueRef   inValue
 )
 {
-    static const char *input_types[] =
-    {
-        "misc",
-        "button",
-        "axis",
-        "scancodes",
-    };
-    
-//    printf("%s(context: %p, result: %i, sender: %p, value: %p).\n",
-//        __PRETTY_FUNCTION__, inContext, inResult, inSender, inValue);
     ViewController *self = (__bridge ViewController *)inContext;
-    ++self.num_inputs;
 
     const uint64_t timestamp = IOHIDValueGetTimeStamp(inValue);
     const CFIndex length = IOHIDValueGetLength(inValue);
@@ -158,7 +152,7 @@ static void handle_device_input
     const CFIndex value = IOHIDValueGetIntegerValue(inValue);
     const double_t scaled_value = IOHIDValueGetScaledValue(inValue, kIOHIDValueScaleTypePhysical);
 
-    printf("Value:: timestamp:%lli, length:%li, value:%li\n", timestamp, length, value);
+//    printf("Value:: timestamp:%lli, length:%li, value:%li\n", timestamp, length, value);
     
     const IOHIDElementRef elem = IOHIDValueGetElement(inValue);
     const IOHIDElementCookie cookie = IOHIDElementGetCookie(elem);
@@ -184,9 +178,35 @@ static void handle_device_input
     const CFIndex physical_min = IOHIDElementGetPhysicalMin(elem);
     const CFIndex physical_max = IOHIDElementGetPhysicalMax(elem);
     
+//    printf("cookie=%d, usage_page=%u, usage=0x%x, unit=%u, length=%ld\n\n",
+//           cookie, usage_page, usage, unit, length);
+
+    HidElementData *h = [HidElementData alloc];
+    h.type = type;
+    h.collection_type = collection_type;
+    h.usage_page = usage_page;
+    h.usage = usage;
+    h.is_virtual = is_virtual;
+    h.is_relative = is_relative;
+    h.is_wrapping = is_wrapping;
+    h.is_array = is_array;
+    h.is_nonlinear = is_nonlinear;
+    h.has_preferred_state = has_preferred_state;
+    h.has_null_state = has_null_state;
+    h.name = name;
+    h.report_id = report_id;
+    h.report_size = report_size;
+    h.report_count = report_count;
+    h.unit = unit;
+    h.unit_exponent = unit_exponent;
+    h.logical_min = logical_min;
+    h.logical_max = logical_max;
+    h.physical_min = physical_min;
+    h.physical_max = physical_max;
     
-    printf("name=%s, usage_page=%u, usage=0x%x, unit=%u, type=%s, length=%ld\n",
-           CFStringGetCStringPtr(name,kCFStringEncodingUTF8), usage_page, usage, unit, input_types[type], length);
+//    NSMutableDictionary *v2 = [self.ds4_list objectForKey:IOHIDDeviceGetProperty(inSender, CFSTR(kIOHIDSerialNumberKey))];
+    [[self.ds4_list objectForKey:IOHIDDeviceGetProperty(inSender, CFSTR(kIOHIDSerialNumberKey))] setObject:h forKey:[NSNumber numberWithInt:cookie]];
+//    [v2 setObject:h forKey:[NSNumber numberWithInt:cookie]];
 }
 
 static void handle_device_report
@@ -201,7 +221,6 @@ static void handle_device_report
 )
 {
     ViewController *self = (__bridge ViewController *)context;
-    ++self.num_reports;
 //    printf("%s(context: %p, result: %i, sender: %p, type: %i, reportID:%i).\n\treport:",
 //           __PRETTY_FUNCTION__, context, result, sender, type, reportID);
 //    for(int i = 0; i < reportLength; ++i)
